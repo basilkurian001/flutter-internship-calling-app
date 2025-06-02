@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_callingapp/contacts_page.dart';
+import 'package:flutter_project_callingapp/home_screen.dart';
+import 'package:flutter_project_callingapp/recents.dart';
 
 class Dhome extends StatefulWidget {
   const Dhome({super.key});
@@ -55,6 +58,13 @@ class _DhomeState extends State<Dhome> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+            );
+        }, icon: Icon(Icons.arrow_back)),
         backgroundColor: Colors.white,
         elevation: 0,
         actions: const [
@@ -177,20 +187,50 @@ class _DhomeState extends State<Dhome> {
 
     // Bottom Nav Row
     Container(
-      height: 40,
-      width: double.infinity,
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Text("Keypad", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          SizedBox(width: 35),
-          Text("Recents", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
-          SizedBox(width: 35),
-          Text("Contacts", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
-        ],
+  height: 60,
+  width: double.infinity,
+  color: Colors.white,
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      GestureDetector(
+        onTap: () {
+        },
+        child: const Text(
+          "Keypad",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
       ),
-    ),
+      const SizedBox(width: 35),
+      GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CallLogScreen()),
+            );
+        },
+        child: const Text(
+          "Recents",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+        ),
+      ),
+      const SizedBox(width: 35),
+      GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ContactsPage()),
+            );
+        },
+        child: const Text(
+          "Contacts",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+        ),
+      ),
+    ],
+  ),
+)
+
   ],
 ),
 
