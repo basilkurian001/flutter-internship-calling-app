@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project_callingapp/dialler.dart';
 import 'package:flutter_project_callingapp/home_screen.dart';
 import 'package:flutter_project_callingapp/recents.dart';
+import 'package:flutter_project_callingapp/call_page.dart'; // Make sure this import exists
 import 'package:hive/hive.dart';
 
 class ContactsPage extends StatefulWidget {
@@ -95,23 +96,22 @@ class _ContactsPageState extends State<ContactsPage> {
   }
 
   List<MapEntry<dynamic, Map<dynamic, dynamic>>> _getSortedAndFilteredContacts() {
-  final entries = contactsBox.toMap().cast<dynamic, Map<dynamic, dynamic>>().entries.toList();
+    final entries = contactsBox.toMap().cast<dynamic, Map<dynamic, dynamic>>().entries.toList();
 
-  final filtered = entries.where((entry) {
-    return entry.value['name']
+    final filtered = entries.where((entry) {
+      return entry.value['name']
+          .toString()
+          .toLowerCase()
+          .contains(_searchQuery.toLowerCase());
+    }).toList();
+
+    filtered.sort((a, b) => a.value['name']
         .toString()
         .toLowerCase()
-        .contains(_searchQuery.toLowerCase());
-  }).toList();
+        .compareTo(b.value['name'].toString().toLowerCase()));
 
-  filtered.sort((a, b) => a.value['name']
-      .toString()
-      .toLowerCase()
-      .compareTo(b.value['name'].toString().toLowerCase()));
-
-  return filtered;
-}
-
+    return filtered;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,40 +180,61 @@ class _ContactsPageState extends State<ContactsPage> {
                 final key = contactEntry.key;
                 final isExpanded = _expandedIndex == index;
 
-                return Column(
-                  children: [
-                    ListTile(
-                      title: Text(contact['name']),
-                      onTap: () {
-                        setState(() {
-                          _expandedIndex = isExpanded ? -1 : index;
-                        });
-                      },
-                      onLongPress: () => _showDeleteConfirmation(key),
-                    ),
-                    if (isExpanded)
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 72.0, right: 16, bottom: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Phone ${contact['phone']}"),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: const [
-                                Icon(Icons.call, color: Colors.green),
-                                Icon(Icons.message, color: Colors.blue),
-                                Icon(Icons.video_call, color: Colors.orange),
-                                Icon(Icons.info, color: Colors.grey),
-                              ],
-                            ),
-                          ],
+                return Dismissible(
+                  key: ValueKey(key),
+                  direction: DismissDirection.startToEnd,
+                  confirmDismiss: (direction) async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ContaCt(
+                          name: contact['name'],
+                          phone: contact['phone'],
                         ),
                       ),
-                    const Divider(),
-                  ],
+                    );
+                    return false; // Prevent actual dismissal
+                  },
+                  background: Container(
+                    color: Colors.green,
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(left: 20),
+                    child: const Icon(Icons.call, color: Colors.white),
+                  ),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(contact['name']),
+                        onTap: () {
+                          setState(() {
+                            _expandedIndex = isExpanded ? -1 : index;
+                          });
+                        },
+                        onLongPress: () => _showDeleteConfirmation(key),
+                      ),
+                      if (isExpanded)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 72.0, right: 16, bottom: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Phone ${contact['phone']}"),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: const [
+                                  Icon(Icons.call, color: Colors.green),
+                                  Icon(Icons.message, color: Colors.blue),
+                                  Icon(Icons.video_call, color: Colors.orange),
+                                  Icon(Icons.info, color: Colors.grey),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      const Divider(),
+                    ],
+                  ),
                 );
               },
             ),
