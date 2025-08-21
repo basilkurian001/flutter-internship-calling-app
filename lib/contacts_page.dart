@@ -1,9 +1,14 @@
+//import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_project_callingapp/dialler.dart';
 import 'package:flutter_project_callingapp/home_screen.dart';
 import 'package:flutter_project_callingapp/recents.dart';
 import 'package:flutter_project_callingapp/call_page.dart'; // Make sure this import exists
 import 'package:hive/hive.dart';
+import 'package:flutter_project_callingapp/message.dart';
+//import 'package:http/http.dart' as http;
+
 
 class ContactsPage extends StatefulWidget {
   const ContactsPage({Key? key}) : super(key: key);
@@ -25,10 +30,14 @@ class _ContactsPageState extends State<ContactsPage> {
     contactsBox = Hive.box('contacts');
   }
 
-  void _addContact(String name, String phone) {
+  void _addContact(String name, String phone) async{
     final newContact = {'name': name, 'phone': phone};
     contactsBox.add(newContact);
-    setState(() {});
+    //await http.post(
+    //Uri.parse("http://192.168.56.1/calling_app/add_contact.php"),
+    //Uri.parse("http://127.0.0.1/calling_app/add_contact.php"),
+    //body: {"name": name, "phone": phone},
+  //);
   }
 
   void _deleteContact(dynamic key) {
@@ -181,61 +190,120 @@ class _ContactsPageState extends State<ContactsPage> {
                 final isExpanded = _expandedIndex == index;
 
                 return Dismissible(
-                  key: ValueKey(key),
-                  direction: DismissDirection.startToEnd,
-                  confirmDismiss: (direction) async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ContaCt(
-                          name: contact['name'],
-                          phone: contact['phone'],
-                        ),
-                      ),
-                    );
-                    return false; // Prevent actual dismissal
-                  },
-                  background: Container(
-                    color: Colors.green,
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.only(left: 20),
-                    child: const Icon(Icons.call, color: Colors.white),
-                  ),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: Text(contact['name']),
-                        onTap: () {
-                          setState(() {
-                            _expandedIndex = isExpanded ? -1 : index;
-                          });
-                        },
-                        onLongPress: () => _showDeleteConfirmation(key),
-                      ),
-                      if (isExpanded)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 72.0, right: 16, bottom: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Phone ${contact['phone']}"),
-                              const SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: const [
-                                  Icon(Icons.call, color: Colors.green),
-                                  Icon(Icons.message, color: Colors.blue),
-                                  Icon(Icons.video_call, color: Colors.orange),
-                                  Icon(Icons.info, color: Colors.grey),
-                                ],
-                              ),
-                            ],
+  key: ValueKey(key),
+  direction: DismissDirection.horizontal, // allow both swipes
+  confirmDismiss: (direction) async {
+    if (direction == DismissDirection.startToEnd) {
+      // Swipe RIGHT → open call page
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ContaCt(
+            name: contact['name'],
+            phone: contact['phone'],
+          ),
+        ),
+      );
+      return false; // Prevent actual dismissal
+    } else if (direction == DismissDirection.endToStart) {
+      // Swipe LEFT → open message page
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AnnelenkinsChatPage(
+            name: contact['name'],
+          ),
+        ),
+      );
+      return false; // Prevent dismissal
+    }
+    return false;
+  },
+
+  // RIGHT swipe background (call)
+  background: Container(
+    color: Colors.green,
+    alignment: Alignment.centerLeft,
+    padding: const EdgeInsets.only(left: 20),
+    child:IconButton(onPressed: (){
+       Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ContaCt(
+            name: contact['name'],
+            phone: contact['phone'],
+          ),
+        ),
+      );
+    }, icon: Icon(Icons.call)),
+
+    
+  ),
+
+  // LEFT swipe background (message)
+  secondaryBackground: Container(
+    color: Colors.blue,
+    alignment: Alignment.centerRight,
+    padding: const EdgeInsets.only(right: 20),
+    child: const Icon(Icons.message, color: Colors.white),
+  ),
+
+  child: Column(
+    children: [
+      ListTile(
+        title: Text(contact['name']),
+        onTap: () {
+          setState(() {
+            _expandedIndex = isExpanded ? -1 : index;
+          });
+        },
+        onLongPress: () => _showDeleteConfirmation(key),
+      ),
+      if (isExpanded)
+        Padding(
+          padding: const EdgeInsets.only(left: 72.0, right: 16, bottom: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Phone ${contact['phone']}"),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(onPressed: (){
+                                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ContaCt(
+                              name: contact['name'],
+                              phone: contact['phone'],
+                            ),
                           ),
-                        ),
-                      const Divider(),
-                    ],
-                  ),
-                );
+                        );
+                  }, icon: Icon(Icons.call,color: Colors.green,)),
+
+                  IconButton(onPressed: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AnnelenkinsChatPage(
+                              name: contact['name'],
+                            ),
+                          ),
+                        );
+                  }, icon: Icon(Icons.message, color: Colors.blue),),
+                  Icon(Icons.video_call, color: Colors.orange),
+                  Icon(Icons.info, color: Colors.grey),
+                ],
+              ),
+            ],
+          ),
+        ),
+      const Divider(),
+    ],
+  ),
+);
+
               },
             ),
       bottomNavigationBar: Container(

@@ -4,11 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_project_callingapp/call_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'contacts_page.dart';
-import 'dart:html' as html;
+//import 'dart:html' as html;
 import 'package:flutter_project_callingapp/dialler.dart';
 import 'package:flutter_project_callingapp/home_screen.dart';
 import 'package:flutter_project_callingapp/recents.dart';
 //import 'helper.dart';
+import 'package:flutter_project_callingapp/message.dart';
 
 
 void exportContactsToJson() {
@@ -16,12 +17,14 @@ void exportContactsToJson() {
   final contacts = box.values.toList();
 
   final json = jsonEncode(contacts);
+  /*
   final blob = html.Blob([json]);
   final url = html.Url.createObjectUrlFromBlob(blob);
   final anchor = html.AnchorElement(href: url)
     ..setAttribute("download", "my_contacts_export.json")
     ..click();
   html.Url.revokeObjectUrl(url);
+  */
 }
 
 
@@ -52,7 +55,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'My Calling App',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: HomeScreen(),
+      home: Dhome(),
       routes: {
         '/contacts': (context) => const ContactsPage(),
       },

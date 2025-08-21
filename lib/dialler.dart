@@ -59,12 +59,14 @@ class _DhomeState extends State<Dhome> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        /*
         leading: IconButton(onPressed: () {
           Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const HomeScreen()),
             );
         }, icon: Icon(Icons.arrow_back)),
+        */
         backgroundColor: Colors.white,
         elevation: 0,
         actions: const [
