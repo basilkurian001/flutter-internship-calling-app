@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project_callingapp/contacts_page.dart';
 import 'package:flutter_project_callingapp/dialler.dart';
 import 'package:flutter_project_callingapp/home_screen.dart';
+import 'package:flutter_project_callingapp/settings_page.dart';
 
 class CallLogScreen extends StatefulWidget {
   @override
@@ -110,12 +111,6 @@ class _CallLogScreenState extends State<CallLogScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: IconButton(onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
-        }, icon: Icon(Icons.arrow_back)),
         title: Text("Phone", style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         centerTitle: false,
@@ -125,7 +120,31 @@ class _CallLogScreenState extends State<CallLogScreen> {
           SizedBox(width: 16),
           Icon(Icons.search, color: Colors.black),
           SizedBox(width: 16),
-          Icon(Icons.more_vert, color: Colors.black),
+          PopupMenuButton<String>(
+        icon: Icon(Icons.more_vert, color: Colors.black), // 3-dot icon
+        onSelected: (value) {
+          if (value == "settings") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CallSettingsPage(), // 👈 create this page
+              ),
+            );
+          } 
+        },
+        itemBuilder: (BuildContext context) {
+          return [
+            const PopupMenuItem(
+              value: "settings",
+              child: Text("Settings"),
+            ),
+            const PopupMenuItem(
+              value: "help",
+              child: Text("Help"),
+            ),
+          ];
+        },
+      ),
         ],
       ),
       backgroundColor: Colors.white,

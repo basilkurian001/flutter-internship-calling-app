@@ -7,6 +7,7 @@ import 'package:flutter_project_callingapp/recents.dart';
 import 'package:flutter_project_callingapp/call_page.dart'; // Make sure this import exists
 import 'package:hive/hive.dart';
 import 'package:flutter_project_callingapp/message.dart';
+import 'package:flutter_project_callingapp/settings_page.dart';
 //import 'package:http/http.dart' as http;
 
 
@@ -129,15 +130,7 @@ class _ContactsPageState extends State<ContactsPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
+        
         title: _isSearching
             ? TextField(
                 controller: _searchController,
@@ -175,7 +168,31 @@ class _ContactsPageState extends State<ContactsPage> {
             },
           ),
           const SizedBox(width: 8),
-          const Icon(Icons.more_vert, color: Colors.black),
+                    PopupMenuButton<String>(
+        icon: Icon(Icons.more_vert, color: Colors.black), // 3-dot icon
+        onSelected: (value) {
+          if (value == "settings") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CallSettingsPage(), // 👈 create this page
+              ),
+            );
+          } 
+        },
+        itemBuilder: (BuildContext context) {
+          return [
+            const PopupMenuItem(
+              value: "settings",
+              child: Text("Settings"),
+            ),
+            const PopupMenuItem(
+              value: "help",
+              child: Text("Help"),
+            ),
+          ];
+        },
+      ),
           const SizedBox(width: 8),
         ],
       ),

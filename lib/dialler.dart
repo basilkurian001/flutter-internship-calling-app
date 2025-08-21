@@ -3,6 +3,7 @@ import 'package:flutter_project_callingapp/contacts_page.dart';
 import 'package:flutter_project_callingapp/home_screen.dart';
 import 'package:flutter_project_callingapp/recents.dart';
 import 'package:flutter_project_callingapp/call_page.dart';
+import 'package:flutter_project_callingapp/settings_page.dart';
 
 class Dhome extends StatefulWidget {
   const Dhome({super.key});
@@ -59,28 +60,47 @@ class _DhomeState extends State<Dhome> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        /*
-        leading: IconButton(onPressed: () {
-          Navigator.push(
+  automaticallyImplyLeading: false,
+  backgroundColor: Colors.white,
+  elevation: 0,
+  actions: [
+    // Search icon
+    Padding(
+      padding: const EdgeInsets.only(right: 20),
+      child: Icon(Icons.search, color: Colors.black),
+    ),
+
+    // 3-dot menu
+    Padding(
+      padding: const EdgeInsets.only(right: 20),
+      child: PopupMenuButton<String>(
+        icon: Icon(Icons.more_vert, color: Colors.black), // 3-dot icon
+        onSelected: (value) {
+          if (value == "settings") {
+            Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              MaterialPageRoute(
+                builder: (context) => CallSettingsPage(), // 👈 create this page
+              ),
             );
-        }, icon: Icon(Icons.arrow_back)),
-        */
-        backgroundColor: Colors.white,
-        elevation: 0,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 20),
-            child: Icon(Icons.search, color: Colors.black),
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: 20),
-            child: Icon(Icons.more_vert, color: Colors.black),
-          ),
-        ],
+          } 
+        },
+        itemBuilder: (BuildContext context) {
+          return [
+            const PopupMenuItem(
+              value: "settings",
+              child: Text("Settings"),
+            ),
+            const PopupMenuItem(
+              value: "help",
+              child: Text("Help"),
+            ),
+          ];
+        },
       ),
+    ),
+  ],
+),
       body: Column(
         children: [
           const SizedBox(height: 10),

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_project_callingapp/call_page.dart';
+import 'package:flutter_project_callingapp/settings_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'contacts_page.dart';
 //import 'dart:html' as html;
