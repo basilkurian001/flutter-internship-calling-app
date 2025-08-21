@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project_callingapp/contacts_page.dart';
 import 'package:flutter_project_callingapp/home_screen.dart';
 import 'package:flutter_project_callingapp/recents.dart';
+import 'package:flutter_project_callingapp/call_page.dart';
 
 class Dhome extends StatefulWidget {
   const Dhome({super.key});
@@ -164,7 +165,17 @@ class _DhomeState extends State<Dhome> {
         child: CircleAvatar(
           backgroundColor: Colors.purple[400],
           radius: 35,
-          child: Icon(Icons.phone, color: Colors.white, size: 35),
+          child: IconButton(onPressed: (){
+            Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ContaCt(
+            name: "",
+            phone: typedNumber,
+          ),
+        ),
+      );
+          }, icon: Icon(Icons.phone, color: Colors.white, size: 35),),
         ),
       ),
       const SizedBox(width: 20),
